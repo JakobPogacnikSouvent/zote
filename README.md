@@ -1,3 +1,5 @@
+A simple CLI that randomly prints one of the 57 precepts of [Zote](https://hollowknight.wiki/w/Zote).
+
 ## Build
 
 1. Make sure you have a C compiler installed (e.g., `gcc`).
