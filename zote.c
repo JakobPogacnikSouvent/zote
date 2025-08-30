@@ -118,7 +118,7 @@ void print_help() {
 }
 
 int main(int argc, char *argv[]) {
-	srand(time(0));
+	srand(time(0) ^ getpid());
 	
 	int precepts_size = sizeof(precepts) / sizeof(precepts[0]);
 	int precept_index = rand() % precepts_size; // Changed if -p flag is passed
