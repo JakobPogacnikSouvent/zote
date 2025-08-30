@@ -111,30 +111,92 @@ int main(int argc, char *argv[]) {
 	srand(time(0));
 	
 	int precepts_size = sizeof(precepts) / sizeof(precepts[0]);
-	char *precept = random_element(precepts, precepts_size);
-	
-	// printf("%s\n", precept);
-	struct Precept test = split(precept);
-//	printf("%s\n", test.number);
-//	printf("%s\n", test.precept);
-//	printf("%s\n", test.description);
+	int precept_index = rand() % precepts_size; // Changed if -p flag is passed
+
+	bool print_number = false;
+	bool print_description = false;
+	int capital_flag = 0;
 
 	int opt;
-	while ((opt = getopt(argc, argv, "npv")) != -1) {
+	while ((opt = getopt(argc, argv, "PNDp:nd")) != -1) {
 		switch (opt) {
+		case 'P':
+			if (capital_flag != 0) {
+			    fprintf(stderr, "Error: -P -N -D are exclusive.\n");
+			    return 1;
+			}
+			capital_flag = 1;
+			break;
+		case 'N':
+			if (capital_flag != 0) {
+			    fprintf(stderr, "Error: -P -N -D are exclusive.\n");
+			    return 1;
+			}
+			capital_flag = 2;
+			break;
+		case 'D':
+			if (capital_flag != 0) {
+			    fprintf(stderr, "Error: -P -N -D are exclusive.\n");
+			    return 1;
+			}
+			capital_flag = 3;
+			break;
+		case 'p':
+				char *endptr;
+				long number = strtol(optarg, &endptr, 10);
+		                if (*endptr != '\0') {
+		                    fprintf(stderr, "Error: '%s' is not a valid number.\n", optarg);
+		                    return 1;
+		                }
+
+		                if (number < 1 || 57 < number) {
+		                    fprintf(stderr, "Error: number must be between 1 and 57.\n");
+		                    return 1;
+		                }
+				precept_index = (int)number - 1;
+		                break;
+
 			case 'n':
-				printf("%s: ", test.number);
+				print_number = true;
 				break;
-			case 'p':
-				printf("%s", test.precept);
-				break;
-			case 'v':
-				printf(" %s\n", test.description);
+			case 'd':
+				print_description = true;
 				break;
 			case '?':
 				printf("Unknown option %c\n", opt);
 				break;
 		}
 	}
+	
+	char *precept = precepts[precept_index];
+	struct Precept test = split(precept);
+	
+	switch (capital_flag) {
+		case 1:
+			printf("%s\n", test.precept);
+			return 0;
+		case 2:	
+			printf("%s\n", test.number);
+			return 0;
+		case 3:
+			printf("%s\n", test.description);
+			return 0;	
+	}
 
+
+
+	if (print_number) {
+		printf("%s: ", test.number);
+	}
+
+	printf("%s", test.precept);
+
+
+	if (print_description) {
+		printf(" %s", test.description);
+	}
+
+	printf("\n");
+
+	return 0;
 }
