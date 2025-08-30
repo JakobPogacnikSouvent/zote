@@ -70,13 +70,6 @@ struct Precept {
 	char *description;
 };
 
-char *random_element(char *arr[], int arr_size) {
-	// int arr_size = sizeof(arr) / sizeof(arr[0]);
-
-	int random_index = rand() % arr_size;
-	return arr[random_index];
-}
-
 struct Precept split(char *full_precept) {
 	struct Precept out;
 	
@@ -110,6 +103,20 @@ struct Precept split(char *full_precept) {
 	return out;
 }
 
+void print_help() {
+    printf("Usage: zote [options]\n");
+    printf("Randomly print one of 57 precepts of Zote.");
+    printf("Options:\n");
+    printf("  -n           print the precept number\n");
+    printf("  -d           print the description of the precept\n");
+    printf("  -q           surround the precept with quotes\n");
+    printf("  -p <num>     specify precept number (1-57)\n");
+    printf("  -P           print only the precept (exclusive)\n");
+    printf("  -N           print only the number (exclusive)\n");
+    printf("  -D           print only the description (exclusive)\n");
+    printf("  -h           show this help message\n");
+}
+
 int main(int argc, char *argv[]) {
 	srand(time(0));
 	
@@ -122,7 +129,7 @@ int main(int argc, char *argv[]) {
 	int capital_flag = 0;
 
 	int opt;
-	while ((opt = getopt(argc, argv, "PNDp:ndq")) != -1) {
+	while ((opt = getopt(argc, argv, ":PNDp:ndqh")) != -1) {
 		switch (opt) {
 			case 'P':
 				if (capital_flag != 0) {
@@ -169,9 +176,13 @@ int main(int argc, char *argv[]) {
 			case 'q':
 				print_quotes = true;
 				break;
+			case 'h':
+				print_help();
+				return 0;
 			case '?':
-				printf("Unknown option %c\n", opt);
-				break;
+				fprintf(stderr, "zote: invalid option -%c\n", optopt);
+				fprintf(stderr, "Try 'zote -h' for more information.\n");
+				return 1;
 		}
 	}
 	
