@@ -95,6 +95,9 @@ struct Precept split(char *full_precept) {
 	rest++;
 
 	char *precept = strtok(rest, ".");
+	precept++;
+	precept[strlen(precept) - 1] = '\0';
+
 	char *description = strtok(NULL, "");
 	description++;
 
@@ -115,33 +118,34 @@ int main(int argc, char *argv[]) {
 
 	bool print_number = false;
 	bool print_description = false;
+	bool print_quotes = false;
 	int capital_flag = 0;
 
 	int opt;
-	while ((opt = getopt(argc, argv, "PNDp:nd")) != -1) {
+	while ((opt = getopt(argc, argv, "PNDp:ndq")) != -1) {
 		switch (opt) {
-		case 'P':
-			if (capital_flag != 0) {
-			    fprintf(stderr, "Error: -P -N -D are exclusive.\n");
-			    return 1;
-			}
-			capital_flag = 1;
-			break;
-		case 'N':
-			if (capital_flag != 0) {
-			    fprintf(stderr, "Error: -P -N -D are exclusive.\n");
-			    return 1;
-			}
-			capital_flag = 2;
-			break;
-		case 'D':
-			if (capital_flag != 0) {
-			    fprintf(stderr, "Error: -P -N -D are exclusive.\n");
-			    return 1;
-			}
-			capital_flag = 3;
-			break;
-		case 'p':
+			case 'P':
+				if (capital_flag != 0) {
+				    fprintf(stderr, "Error: -P -N -D are exclusive.\n");
+				    return 1;
+				}
+				capital_flag = 1;
+				break;
+			case 'N':
+				if (capital_flag != 0) {
+				    fprintf(stderr, "Error: -P -N -D are exclusive.\n");
+				    return 1;
+				}
+				capital_flag = 2;
+				break;
+			case 'D':
+				if (capital_flag != 0) {
+				    fprintf(stderr, "Error: -P -N -D are exclusive.\n");
+				    return 1;
+				}
+				capital_flag = 3;
+				break;
+			case 'p':
 				char *endptr;
 				long number = strtol(optarg, &endptr, 10);
 		                if (*endptr != '\0') {
@@ -161,6 +165,9 @@ int main(int argc, char *argv[]) {
 				break;
 			case 'd':
 				print_description = true;
+				break;
+			case 'q':
+				print_quotes = true;
 				break;
 			case '?':
 				printf("Unknown option %c\n", opt);
@@ -183,14 +190,19 @@ int main(int argc, char *argv[]) {
 			return 0;	
 	}
 
-
-
 	if (print_number) {
 		printf("%s: ", test.number);
 	}
 
-	printf("%s", test.precept);
-
+	if (print_quotes) {
+		printf("'%s'", test.precept);
+	} else {
+		printf("%s", test.precept);
+	}
+	
+	if (print_number || print_description) {
+		printf(".");
+	}
 
 	if (print_description) {
 		printf(" %s", test.description);
