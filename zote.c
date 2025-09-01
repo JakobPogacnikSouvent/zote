@@ -111,7 +111,6 @@ void print_help() {
     printf("  -d           print the description of the precept\n");
     printf("  -q           surround the precept with quotes\n");
     printf("  -p <num>     specify precept number (1-57)\n");
-    printf("  -P           print only the precept (exclusive)\n");
     printf("  -N           print only the number (exclusive)\n");
     printf("  -D           print only the description (exclusive)\n");
     printf("  -h           show this help message\n");
@@ -129,28 +128,21 @@ int main(int argc, char *argv[]) {
 	int capital_flag = 0;
 
 	int opt;
-	while ((opt = getopt(argc, argv, ":PNDp:ndqh")) != -1) {
+	while ((opt = getopt(argc, argv, ":NDp:ndqh")) != -1) {
 		switch (opt) {
-			case 'P':
+			case 'N':
 				if (capital_flag != 0) {
 				    fprintf(stderr, "Error: -P -N -D are exclusive.\n");
 				    return 1;
 				}
 				capital_flag = 1;
 				break;
-			case 'N':
-				if (capital_flag != 0) {
-				    fprintf(stderr, "Error: -P -N -D are exclusive.\n");
-				    return 1;
-				}
-				capital_flag = 2;
-				break;
 			case 'D':
 				if (capital_flag != 0) {
 				    fprintf(stderr, "Error: -P -N -D are exclusive.\n");
 				    return 1;
 				}
-				capital_flag = 3;
+				capital_flag = 2;
 				break;
 			case 'p':
 				char *endptr;
@@ -190,13 +182,10 @@ int main(int argc, char *argv[]) {
 	struct Precept test = split(precept);
 	
 	switch (capital_flag) {
-		case 1:
-			printf("%s\n", test.precept);
-			return 0;
-		case 2:	
+		case 1:	
 			printf("%s\n", test.number);
 			return 0;
-		case 3:
+		case 2:
 			printf("%s\n", test.description);
 			return 0;	
 	}
